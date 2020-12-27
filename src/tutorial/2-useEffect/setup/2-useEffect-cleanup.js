@@ -12,8 +12,14 @@ const UseEffectCleanup = () => {
   }
 
   useEffect(() => {
+    console.log('useEffect');  // called once
     window.addEventListener('resize', checkSize);
+    return () => {  // cleanup callback
+      console.log('cleanup');  // cleanup called before calling useEffect() again
+      window.removeEventListener('resize', checkSize);
+    }
   });
+  console.log('render');  // will be called twice
 
 return <>
   <h1>window</h1>
