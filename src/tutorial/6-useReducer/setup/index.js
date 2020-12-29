@@ -6,8 +6,22 @@ const reducer = (state, action) => {
   // this is where we deal with the state
   // must return some type of state
   console.log(state, action);
-  if (action.type === 'TESTING') {
-    return {...state, people:data, isModalOpen: true, modalContent: "item added"};
+  if (action.type === 'ADD_ITEM') {
+    const newPeople = [...state.people, action.payload]
+    return {
+      ...state,
+      people: newPeople,
+      isModalOpen: true,
+      modalContent: "item added"
+    };
+  }
+  if (action.type === 'NO_VALUE') {
+    // just copy everything & flip only values that need changing
+    return {
+      ...state,
+      isModalOpen: true,
+      modalContent: 'please enter value',
+    }
   }
   // return state;
   throw new Error ('no matching action type');
@@ -25,9 +39,11 @@ const Index = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (name) {
-      dispatch({type:'TESTING'})  // must have `type`
+      const newItem = {id: new Date().getTime().toString(), name};
+      dispatch({type:'ADD_ITEM', payload:newItem})  // must have `type`
+      setName('')
     } else {
-      dispatch({type: 'RANDOM'});
+      dispatch({type: 'NO_VALUE'});
     }
   }
 
