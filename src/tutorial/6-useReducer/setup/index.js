@@ -2,25 +2,37 @@ import React, { useState, useReducer } from 'react';
 import Modal from './Modal';
 import { data } from '../../../data';
 // reducer function
+const reducer = (state, action) => {
+  // this is where we deal with the state
+  // must return some type of state
+  console.log(state, action);
+  if (action.type === 'TESTING') {
+    return {...state, people:data, isModalOpen: true, modalContent: "item added"};
+  }
+  // return state;
+  throw new Error ('no matching action type');
+}
 
+const defaultState = {
+  people: [],
+  isModalOpen: false,
+  modalContent: 'hello',
+}
 const Index = () => {
   const [name,setName] = useState('');
-  const [people,setPeople] = useState(data);
-  const [showModal,setShowModal] = useState(false);
+  const [state, dispatch] = useReducer(reducer, defaultState);  // reducer takes old state & action, spits back new state
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (name) {
-      setShowModal(true);
-      setPeople([...people, {id:new Date().getTime().toString(), name}]);
-      setName('');
+      dispatch({type:'TESTING'})  // must have `type`
     } else {
-      setShowModal(true);
+      dispatch({type: 'RANDOM'});
     }
   }
 
   return <>
-    {showModal && <Modal/>}
+    {state.isModalOpen && <Modal modalContent={state.modalContent}/>}
     <form onSubmit={handleSubmit} className="form">
       <div>
         <input type="text"
@@ -29,7 +41,7 @@ const Index = () => {
       </div>
       <button type="submit">add</button>
     </form>
-    {people.map((person) => {
+    {state.people.map((person) => {
       return <div key={person.id}>
         <h4>{person.name}</h4>
       </div>
